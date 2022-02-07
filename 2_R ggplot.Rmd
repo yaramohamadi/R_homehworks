@@ -1,0 +1,83 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Yara Mohammadi - 880199265
+
+# 3- 
+### C.
+
+```{r}
+
+
+p_even = 0.5 * (1 + exp(-20))
+p_even
+```
+
+
+# 8-
+
+### Loading the dataset
+
+```{r}
+foods <- read.csv(file = 'Foods.csv')
+head(foods)
+```
+
+### <b> A. <\b>
+
+By changing the number of bins, we could control how close the count axis for histogram is to the density function. 
+
+```{r}
+library(ggplot2)
+
+
+ggplot(foods, aes(x=pricePerServing, y=..count..)) + scale_x_log10() + geom_histogram(fill='palegreen4', col='green', bins = 20) + ggtitle("Histogram & Density of pricePerServing") + geom_density(col='red') + xlab('Price Per Serving (Logarithmic)')
+   
+```
+
+### <b> B. <\b>
+
+```{r}
+ggplot(foods, aes(x=readyInMinutes, y=healthScore, alpha = ..level..)) + stat_density2d(geom = "polygon", col='white', fill='palegreen4') + ggtitle("Your Title Goes Here") + xlab('Ready In Minutes') + ylab('Health Score')
+```
+
+### <b> C. <\b>
+
+
+```{r}
+
+# Sort dishType  in ascending order
+foods2 =  as.data.frame(sort(table(foods$dishType)))
+
+ggplot(foods2, aes(x=Var1, y=Freq, fill=Var1)) + geom_bar(stat='identity') + coord_flip() + xlab('Dish Type') + ylab('Count') + theme(legend.position = "none") + ggtitle("Horizontal Bar Plot of Dish Types")
+```
+
+### <b> D. <\b>
+
+
+```{r}
+ggplot(foods, aes(x=dishType, y=healthScore, fill=dishType)) + geom_boxplot() + xlab('Dish Type') + ylab('Health Score') + theme(legend.position = "none") + ggtitle("Boxplots of Health Bills")
+```
+
+### <b> E. <\b>
+
+For this question, I used the GGmosaic library on top of GGplot. Mosaic plots can be crafted by BarPlots as well. 
+
+To obtain the percentages, I created a new column in the Foods dataset to measure them first and then placed the measured numbers in the geom_text() function.
+```{r}
+library(ggmosaic)
+library(dplyr)
+
+foods <- foods %>%
+  count(veryHealthy, dairyFree) %>%       
+  group_by(veryHealthy) %>%
+  mutate(pct= prop.table(n))
+  ggplot(foods) + 
+  geom_col() +
+  aes(x=veryHealthy, y=pct, fill=dairyFree) +
+  geom_text(aes(label=paste0(sprintf("%1.1f", pct*100),"%")), position=position_stack(vjust=0.5)) + 
+  labs(title='Mosaic Plot of VeryHealthy & DairyFree', fill = "dairy Free") + ylab('Proportion') + xlab('Very Healthy') + theme()
+
+```

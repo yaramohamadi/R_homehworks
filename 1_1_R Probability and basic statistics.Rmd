@@ -1,0 +1,81 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# 8- (R)
+
+## <b> A. </b>
+
+```{r}
+scores <- c(57, 66, 72, 78, 79, 79, 81, 81, 82, 83, 84, 87, 88, 88, 89, 90, 91, 92, 94, 95)
+
+scores
+```
+
+## <b> B. </b>
+
+```{r}
+print(mean(scores))
+print(sd(scores))
+print(median(scores))
+
+getmode <- function(vec) {
+  unique_vec = unique(vec)
+  
+  #print("matches:")
+  #print(match(vec, unique_vec))
+  #print("tabulate")
+  #print(tabulate(match(vec. unique_vec)))
+  #print("which index is maximum?")
+  #print(which.max(tabulate(match(vec, unique_vec))))
+  unique_vec[which.max(tabulate(match(vec, unique_vec)))]
+}
+
+print(getmode(scores))
+```
+
+## <b> C. </b>
+
+I take outliers as points higher than Q3 + 1.5 times the IQR or lower than Q1 - 1.5 times the IQR
+
+```{r}
+Q1 <- quantile(scores, 0.25)
+Q3 <- quantile(scores, 0.75)
+IQR <- IQR(scores)
+
+no_outliers <- subset(scores, (scores < (Q1 - 1.5*IQR)) | (scores > (Q3 + 1.5*IQR)))
+
+print(no_outliers)
+```
+
+## <b> D. </b>
+
+```{r}
+boxplot(scores)
+```
+
+## <b> E. </b>
+
+```{r}
+hist(scores, prob=TRUE)
+```
+
+### <b> i. </b>
+
+Negative (left) skewed
+
+### <b> ii. </b>
+
+Mean is larger than median:
+
+Skewness ~ median - mean
+
+Skewness < 0
+
+median < mean
+
+
+### <b> iii. </b>
+
+Best measurement is Median because it is robust to outliers and skewdness

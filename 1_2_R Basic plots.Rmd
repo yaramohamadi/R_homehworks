@@ -1,0 +1,72 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# <b> 9- (R) </b>
+
+## <b> A. </b>
+
+```{r}
+imdb <- read.csv(file = 'imdb.csv')
+head(imdb)
+```
+
+## <b> B. </b>
+
+```{r}
+plot(table(imdb$year), type='p', main="Toal Movie Productions Yearly", xlab="year", ylab="Movies Produced")
+```
+
+## <b> C. </b>
+
+```{r}
+hist(imdb$USA_gross_income/1000000, main="USA gross income Histogram", xlab="Income (x10^6) $", ylab="Occurances")
+```
+
+Its Right Skewed
+
+## <b> D. </b>
+
+```{r}
+t <- unique(imdb$tomatometer_status)
+t
+```
+
+```{r}
+rotten <- imdb$duration[which(imdb$tomatometer_status==t[1])]
+cfresh <- imdb$duration[which(imdb$tomatometer_status==t[2])]
+fresh <- imdb$duration[which(imdb$tomatometer_status==t[3])]
+par(mfrow=c(1,3))
+boxplot(rotten)
+boxplot(cfresh)
+boxplot(fresh)
+par(mfrow=c(1,1))
+boxplot(rotten, cfresh, fresh, main="Movie Durations of each Tomatometer", ylab="Duration (minutes)", xlab="Tomatometer Status", names=t)
+```
+
+outliers are shown as white circles on the diagram. Most of the outliers are lengthier movies, not shorter movies. Certified-Fresh group has a very far outlier residing on the very top of the diagram.
+
+## <b> E. </b>
+
+```{r}
+imdb$duration_new <- ifelse( imdb$duration > 200, 1,
+                             ifelse( imdb$duration >150, 2,
+                             ifelse( imdb$duration >100, 3,
+                             ifelse( imdb$duration <= 80, 4, 5))))
+
+x <- table(imdb$duration_new)
+pie_percent <- round(100*x/sum(x), 1)
+labels <- c('Very Long', 'Long', 'Standard', 'Short', 'Others')
+
+pie(x, label=paste0(pie_percent, '%'), main="Movie Durations", col=rainbow(length(x)))
+legend("topright", labels, cex=0.8, fill=rainbow(length(x)))
+```
+
+## <b> F. </b>
+```{r}
+plot(imdb$USA_gross_income/10000000, imdb$worldwide_gross_income/10000000, main="Relationship between gross income from the world and USA", xlab="USA gross income (x10^6) $", ylab="Worldwide gross income (x10^6) $")
+
+```
+
+There is a positive correlation between USA gross income and Worldwide gross income. The Worldwide income is around 2.5 times bigger than US income
